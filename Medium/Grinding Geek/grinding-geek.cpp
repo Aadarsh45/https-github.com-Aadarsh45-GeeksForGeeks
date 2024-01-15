@@ -5,36 +5,23 @@ using namespace std;
 // } Driver Code Ends
 class Solution{
     public:
-        int max_courses(int n, int total, vector<int> &cost)
-
-    {
-
-        //Code Here
-
-        vector<vector<int>> dp(n + 1, vector<int>(total+1,0));
-
-        for(int ind=n-1;ind>=0;ind--){
-
-            for(int j = 0; j<=total;j++){
-
-                int pick = -1001;
-
-                if(j >= cost[ind]){
-
-                    pick = 1 + dp[ind + 1][j - (cost[ind] - (int)((0.9)*(cost[ind])))];
-
-                }
-
-                int not_pick = dp[ind + 1][j];
-
-                dp[ind][j] = max(pick, not_pick);
-
-            }
-
+       int check(vector<int> &cost,int i,int total,vector<vector<int>>&dp,int n){
+        if(i>=n){
+            return 0;
         }
-
-        return dp[0][total];
-
+        if(dp[i][total]!=-1){
+            return dp[i][total];
+        }
+        if(total>=cost[i]){
+            int price = cost[i] - floor(0.9*cost[i]);
+            return dp[i][total]= max( 1 + check(cost ,i+1 , total-price ,dp,n), check(cost ,i+1 , total , dp,n));
+        }
+        return dp[i][total]=check(cost,i+1,total,dp,n);
+    } 
+    int max_courses(int n, int total, vector<int> &cost)
+    {
+        vector<vector<int>> dp(n, vector<int>(total + 1, -1));
+        return check(cost,0,total,dp,n);
     }
 
 };
